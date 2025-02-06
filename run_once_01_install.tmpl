@@ -1,0 +1,90 @@
+#!/bin/bash
+export DEBIAN_FRONTEND=noninteractive
+
+# Decrypt VPN configuration files if they do not already exist
+if [ ! -f "{{ .chezmoi.sourceDir }}/rtx.ovpn.age" ]; then
+    chezmoi decrypt --output "{{ .chezmoi.sourceDir }}/rtx.ovpn"
+fi
+if [ ! -f "{{ .chezmoi.sourceDir }}/super.ovpn.age" ]; then
+    chezmoi decrypt --output "{{ .chezmoi.sourceDir }}/super.ovpn"
+fi
+
+# Check nmcli and import all .ovpn files in current directory
+if ! command -v nmcli &>/dev/null; then
+    echo "nmcli not found. Installing network-manager..."
+    sudo apt install -y network-manager
+fi
+
+PROFILE="super"
+for file in ./*.ovpn; do
+    if [ -f "$file" ]; then
+        echo "Importing VPN from $file..."
+        nmcli connection import type openvpn file "$file"
+        echo "Connecting to VPN $(basename "$file" .ovpn)..."
+        nmcli connection up "$PROFILE"
+    fi
+done
+
+sudo apt update
+# Check and install required tools: curl, wget, ip (provided by iproute2)
+MISSING_TOOLS=""
+for tool in curl wget net-tools; do
+    if ! command -v $tool &>/dev/null; then
+        MISSING_TOOLS="$MISSING_TOOLS $tool"
+    fi
+done
+if [ -n "$MISSING_TOOLS" ]; then
+    echo "Installing missing tools:$MISSING_TOOLS"
+    sudo apt install -y $MISSING_TOOLS
+fi
+
+# Check and install Docker if not installed, then add current user to docker group
+if ! command -v docker &>/dev/null; then
+    echo "Docker not found. Installing docker.io..."
+    sudo apt install -y docker.io
+    sudo usermod -aG docker "$USER"
+    echo "Docker installation complete. Please log out and back in to use Docker without sudo."
+else
+    echo "Docker is already installed."
+fi
+
+# Check and install distrobox if not installed
+if ! command -v distrobox &>/dev/null; then
+    echo "distrobox not found. Installing..."
+    curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/install | sudo sh
+    echo "distrobox installation complete."
+else
+    echo "distrobox is already installed."
+fi
+
+# Create and configure distrobox with NVIDIA passthrough if nvidia-smi exists
+if command -v nvidia-smi &>/dev/null; then
+    echo "Creating distrobox with NVIDIA passthrough..."
+    distrobox-create --name ubuntu --image ubuntu:24.04 --nvidia --yes
+else
+    echo "Creating distrobox without NVIDIA passthrough..."
+    distrobox-create --name ubuntu --image ubuntu:24.04 --yes
+fi
+
+# Enter the distrobox and install applications
+distrobox-enter ubuntu -- bash <<EOF
+sudo apt update
+sudo apt install -y wget fuse
+wget -O /tmp/thorium-browser.deb https://github.com/Alex313031/thorium/releases/download/M128.0.6613.189/thorium-browser_128.0.6613.189_AVX.deb
+sudo dpkg -i /tmp/thorium-browser.deb
+wget -O /tmp/nvim-linux-x86_64.appimage https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage
+chmod u+x /tmp/nvim-linux-x86_64.appimage
+sudo mv /tmp/nvim-linux-x86_64.appimage /usr/local/bin/nvim
+wget -O /tmp/discord.deb https://discord.com/api/download?platform=linux&format=deb
+sudo dpkg -i /tmp/discord.deb
+sudo apt install -f -y
+echo 'Applications installed inside distrobox.'
+EOF
+
+# Export applications from distrobox
+distrobox-enter ubuntu -- bash <<EOF
+distrobox-export --app thorium-browser
+distrobox-export --bin /usr/local/bin/nvim
+distrobox-export --app discord
+echo 'Applications exported from distrobox.'
+EOF
