@@ -3,10 +3,10 @@ export DEBIAN_FRONTEND=noninteractive
 
 # Decrypt VPN configuration files if they do not already exist
 if [ ! -f "{{ .chezmoi.sourceDir }}/rtx.ovpn.age" ]; then
-    chezmoi decrypt --output "{{ .chezmoi.sourceDir }}/rtx.ovpn"
+    cat {{ .chezmoi.sourceDir }}/rtx.ovpn.age | chezmoi decrypt --output "{{ .chezmoi.sourceDir }}/rtx.ovpn"
 fi
 if [ ! -f "{{ .chezmoi.sourceDir }}/super.ovpn.age" ]; then
-    chezmoi decrypt --output "{{ .chezmoi.sourceDir }}/super.ovpn"
+    cat {{ .chezmoi.sourceDir }}/super.ovpn.age | chezmoi decrypt --output "{{ .chezmoi.sourceDir }}/super.ovpn"
 fi
 
 # Check nmcli and import all .ovpn files in current directory
