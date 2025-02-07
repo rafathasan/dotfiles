@@ -74,7 +74,7 @@ wget -O /tmp/thorium-browser.deb https://github.com/Alex313031/thorium/releases/
 sudo dpkg -i /tmp/thorium-browser.deb
 wget -O /tmp/nvim-linux-x86_64.appimage https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage
 chmod u+x /tmp/nvim-linux-x86_64.appimage
-sudo mv /tmp/nvim-linux-x86_64.appimage /usr/local/bin/nvim
+sudo mv /tmp/nvim-linux-x86_64.appimage /usr/local/bin/vim
 wget -O /tmp/discord.deb https://discord.com/api/download?platform=linux&format=deb
 sudo dpkg -i /tmp/discord.deb
 sudo apt install -f -y
@@ -84,7 +84,7 @@ EOF
 # Export applications from distrobox
 distrobox-enter ubuntu -- bash <<EOF
 distrobox-export --app thorium-browser
-distrobox-export --bin /usr/local/bin/nvim
+distrobox-export --bin /usr/local/bin/vim
 distrobox-export --app discord
 echo 'Applications exported from distrobox.'
 EOF
