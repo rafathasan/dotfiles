@@ -16,7 +16,7 @@ if ! command -v nmcli &>/dev/null; then
 fi
 
 PROFILE="super"
-for file in ./*.ovpn; do
+for file in ~/.local/share/chezmoi/*.ovpn; do
     if [ -f "$file" ]; then
         echo "Importing VPN from $file..."
         nmcli connection import type openvpn file "$file"
