@@ -2,10 +2,10 @@
 export DEBIAN_FRONTEND=noninteractive
 
 # Decrypt VPN configuration files if they do not already exist
-if [ -e "~/.local/share/chezmoi/rtx.ovpn.age" ]; then
+if [ -e ~/.local/share/chezmoi/rtx.ovpn.age ]; then
     cat ~/.local/share/chezmoi/rtx.ovpn.age | chezmoi decrypt --output "~/.local/share/chezmoi/rtx.ovpn"
 fi
-if [ -e "~/.local/share/chezmoi/super.ovpn.age" ]; then
+if [ -e ~/.local/share/chezmoi/super.ovpn.age ]; then
     cat ~/.local/share/chezmoi/super.ovpn.age | chezmoi decrypt --output "~/.local/share/chezmoi/super.ovpn"
 fi
 
