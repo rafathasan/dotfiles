@@ -18,10 +18,17 @@ fi
 PROFILE="super"
 for file in ~/.local/share/chezmoi/*.ovpn; do
     if [ -f "$file" ]; then
-        echo "Importing VPN from $file..."
-        nmcli connection import type openvpn file "$file"
-        echo "Connecting to VPN $(basename "$file" .ovpn)..."
-        nmcli connection up "$PROFILE"
+        vpn_name=$(basename "$file" .ovpn)
+        
+        # Check if the VPN profile already exists
+        if nmcli connection show "$vpn_name" > /dev/null 2>&1; then
+            echo "VPN profile '$vpn_name' already exists. Skipping import."
+        else
+            echo "Importing VPN from $file..."
+            nmcli connection import type openvpn file "$file"
+            echo "Connecting to VPN '$vpn_name'..."
+            nmcli connection up "$vpn_name"
+        fi
     fi
 done
 
