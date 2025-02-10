@@ -60,10 +60,10 @@ fi
 # Create and configure distrobox with NVIDIA passthrough if nvidia-smi exists
 if command -v nvidia-smi &>/dev/null; then
     echo "Creating distrobox with NVIDIA passthrough..."
-    distrobox-create --name ubuntu --image ubuntu:24.04 --nvidia --yes
+    distrobox-create --init --additional-packages "systemd" --name ubuntu --image ubuntu:24.04 --nvidia --yes
 else
     echo "Creating distrobox without NVIDIA passthrough..."
-    distrobox-create --name ubuntu --image ubuntu:24.04 --yes
+    distrobox-create --init --additional-packages "systemd" --name ubuntu --image ubuntu:24.04 --yes
 fi
 
 # Enter the distrobox and install applications
