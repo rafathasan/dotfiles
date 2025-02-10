@@ -85,7 +85,7 @@ sudo mv /tmp/nvim-linux-x86_64.appimage /usr/local/bin/vim
 curl -L -# -o /tmp/discord.deb https://discord.com/api/download?platform=linux&format=deb
 sudo dpkg -i /tmp/discord.deb
 sudo apt install -f -y
-curl -L -# -o /tmp/vscode.deb https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64
+curl -L -# -o /tmp/vscode.deb -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36" "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
 sudo dpkg -i /tmp/vscode.deb
 echo 'Applications installed inside distrobox.'
 EOF
