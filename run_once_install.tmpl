@@ -85,6 +85,8 @@ sudo mv /tmp/nvim-linux-x86_64.appimage /usr/local/bin/vim
 curl -L -# -o /tmp/discord.deb https://discord.com/api/download?platform=linux&format=deb
 sudo dpkg -i /tmp/discord.deb
 sudo apt install -f -y
+curl -L -# -o /tmp/vscode.deb https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64
+sudo dpkg -i /tmp/vscode.deb
 echo 'Applications installed inside distrobox.'
 EOF
 
@@ -93,5 +95,6 @@ distrobox-enter ubuntu -- bash <<EOF
 distrobox-export --app thorium-browser
 distrobox-export --bin /usr/local/bin/vim
 distrobox-export --app discord
+distrobox-export --app code
 echo 'Applications exported from distrobox.'
 EOF
