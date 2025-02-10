@@ -76,13 +76,13 @@ fi
 # Enter the distrobox and install applications
 distrobox-enter ubuntu -- bash <<EOF
 sudo apt update
-sudo apt install -y wget fuse
-wget -O /tmp/thorium-browser.deb https://github.com/Alex313031/thorium/releases/download/M128.0.6613.189/thorium-browser_128.0.6613.189_AVX.deb
+sudo apt install -y curl fuse
+curl -s -o /tmp/thorium-browser.deb https://github.com/Alex313031/thorium/releases/download/M128.0.6613.189/thorium-browser_128.0.6613.189_AVX.deb
 sudo dpkg -i /tmp/thorium-browser.deb
-wget -O /tmp/nvim-linux-x86_64.appimage https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage
+curl -s -o /tmp/nvim-linux-x86_64.appimage https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage
 chmod u+x /tmp/nvim-linux-x86_64.appimage
 sudo mv /tmp/nvim-linux-x86_64.appimage /usr/local/bin/vim
-wget -O /tmp/discord.deb https://discord.com/api/download?platform=linux&format=deb
+curl -s -o /tmp/discord.deb https://discord.com/api/download?platform=linux&format=deb
 sudo dpkg -i /tmp/discord.deb
 sudo apt install -f -y
 echo 'Applications installed inside distrobox.'
