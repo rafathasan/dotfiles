@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if [ ! -f "~/.config/chezmoi/key.txt" ]; then
+    mkdir -p "~/.config/chezmoi"
+    chezmoi age decrypt --output "~/.config/chezmoi/key.txt" --passphrase "~/.local/share/chezmoi/key.txt.age"
+    chmod 600 ~/.config/chezmoi/key.txt
+    chezmoi decrypt --output "~/.local/share/chezmoi/init.sh" < ~/.local/share/chezmoi/init.sh.age
+    chmod +x ~/.config/chezmoi/init.sh
+    ~/.config/chezmoi/init.sh
+fi
